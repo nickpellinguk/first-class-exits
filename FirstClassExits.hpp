@@ -2,10 +2,10 @@
 // ============================================================================
 // FirstClassExits.hpp
 //
-// First-class exit: every way a function can exit is given its own exit type
+// First-class exits: every way a function can exit is given its own exit type
 // declared in the function's contract, and proven at compile time.
 //
-// An exit is a plain struct, containing its data members, then a
+// An individual exit is a plain struct, containing its data members, then a
 //     static constexpr std::string_view fmt_spec
 // whose {} placeholders are filled by the data members in declaration order.
 // A struct may instead supply fields() returning a std::tie of the members to
@@ -240,7 +240,7 @@ constexpr bool every_scenario_reaches_its_exit(const Scenario<O> (&rows)[N]) {
 #define FCE_CHECK_SCENARIOS(TABLE)                               \
     static_assert(::fce::covers_every_exit(TABLE),               \
                   #TABLE ": an exit has no scenario");           \
-    static_assert(::fce::every_scenario_reaches_its_exit(rows),  \
+    static_assert(::fce::every_scenario_reaches_its_exit(TABLE), \
                   #TABLE ": a scenario reached the wrong exit")
 
 // Returns the given exit when the condition holds. The exit is variadic because
