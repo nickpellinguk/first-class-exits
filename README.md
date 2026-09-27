@@ -50,7 +50,7 @@ struct TooBig {
 using PortExit = fce::Outcome<fce::Successes<ParsedOk>,
                               fce::Failures<TextEmpty, TooLong, BadSyntax, IsZero, TooBig>>;
 
-constexpr PortExit parse_port(std::string_view text) {
+constexpr PortExit parse_port_impl(std::string_view text) {
     constexpr std::size_t kMaxPortStringLength = 5;
     RETURN_IF(text.empty(), TextEmpty{});
     RETURN_IF(text.size() > kMaxPortStringLength, TooLong{.length = text.size()});
@@ -66,22 +66,27 @@ constexpr PortExit parse_port(std::string_view text) {
     return ParsedOk{.port = port};
 }
 
+PortExit parse_port(std::string_view text) {
+    return parse_port_impl(text);
+}
+
 constexpr fce::Scenario<PortExit> port_scenarios[] = {
-    fce::expect<ParsedOk>  ([] { return parse_port("8080"); }),
-    fce::expect<TextEmpty> ([] { return parse_port(""); }),
-    fce::expect<TooLong>   ([] { return parse_port("123456"); }),
-    fce::expect<BadSyntax> ([] { return parse_port("80x0"); }),
-    fce::expect<IsZero>    ([] { return parse_port("0"); }),
-    fce::expect<TooBig>    ([] { return parse_port("99999"); }),
+    fce::expect<ParsedOk>  ([] { return parse_port_impl("8080"); }),
+    fce::expect<TextEmpty> ([] { return parse_port_impl(""); }),
+    fce::expect<TooLong>   ([] { return parse_port_impl("123456"); }),
+    fce::expect<BadSyntax> ([] { return parse_port_impl("80x0"); }),
+    fce::expect<IsZero>    ([] { return parse_port_impl("0"); }),
+    fce::expect<TooBig>    ([] { return parse_port_impl("99999"); }),
 };
 CHECK_SCENARIOS(port_scenarios);
 
-static_assert( parse_port("8080").get<ParsedOk>().port == 8080);
-static_assert(!parse_port("80x0"));
-static_assert( parse_port("80x0").get<BadSyntax>().badChar == 'x');
-static_assert( parse_port("80x0").get<BadSyntax>().column == 3);
-static_assert( parse_port("123456").get<TooLong>().length == 6);
-static_assert( parse_port("99999").get<TooBig>().value == 99999);
+static_assert( parse_port_impl("8080").get<ParsedOk>().port == 8080);
+static_assert(!parse_port_impl("80x0"));
+static_assert( parse_port_impl("80x0").get<BadSyntax>().badChar == 'x');
+static_assert( parse_port_impl("80x0").get<BadSyntax>().column == 3);
+static_assert( parse_port_impl("123456").get<TooLong>().length == 6);
+static_assert( parse_port_impl("99999").get<TooBig>().value == 99999);
 
 int main() {}
+
 ```
