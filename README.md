@@ -1,7 +1,6 @@
-# first-class-exits
-How to use First Class Exits in your C++ code
+# How to use C++ First Class Exits
 
-First class exits are std::variant exit types that allow you to quickly specify all the success types and failure types that a given function can return.
+First class exits are std::variant exit types that allow you to specify all the success types and failure types that a given function can return. This is to support unit testing via static_assert().
 
 This allows you:
 - to have multiple different successful return types
@@ -75,7 +74,7 @@ constexpr fce::Scenario<PortExit> port_scenarios[] = {
     fce::expect<IsZero>    ([] { return parse_port("0"); }),
     fce::expect<TooBig>    ([] { return parse_port("99999"); }),
 };
-FCE_CHECK_SCENARIOS(port_scenarios);
+CHECK_SCENARIOS(port_scenarios);
 
 static_assert( parse_port("8080").get<ParsedOk>().port == 8080);
 static_assert(!parse_port("80x0"));
