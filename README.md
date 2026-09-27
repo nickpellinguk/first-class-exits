@@ -9,19 +9,19 @@ This allows you:
 - to assign each exit path its own unique failure type
 - to have full exit path coverage in your unit test code
 - to build and reuse a library of failure types for your project
-- to have single-line exit handling (via "RETURN_IF(CONDITION, EXIT_TYPE{})")
+- to have single-line exit handling (via `RETURN_IF(CONDITION, EXIT_TYPE{})`)
 
 This library includes a generic header that enables this, plus a self-contained example file showing typical usage.
 
 # Requirements
 
-- C++20, plus and a standard library with <format>
+- C++20, plus a standard library with `<format>`
 
 # Implementation notes
 
-1. Note that the core logic must be constexpr, and so is automatically inline: Example_PortTest.cpp does its work via a constexpr parse_port_impl(), with a simple parse_port() wrapped around it.
+1. Note that the core logic must be constexpr, and so is automatically inline: Example_PortTest.cpp does its work via a `constexpr parse_port_impl()`, with a simple `parse_port()` wrapped around it.
 2. Because the core logic is constexpr, I/O belongs in a thin outer layer or a callback
-3. The message() method (that turns the failure types into readable text) uses the std::format library and so is runtime-only
+3. The message() method (that turns the failure types into readable text) uses the `std::format` library and so is runtime-only
 4. The scenario table gives you exit coverage, not interior code coverage
 5. Automatic field extraction only goes up to seven fields
 6. Positional placeholders (such as "{0}") aren't currently supported by the placeholder count.
