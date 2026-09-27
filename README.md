@@ -28,7 +28,7 @@ This library includes a generic header that enables this, plus a self-contained 
 
 # Example client code
 
-```
+```cpp
 #include "FirstClassExits.hpp"
 
 struct ParsedOk {
