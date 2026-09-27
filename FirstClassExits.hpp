@@ -7,19 +7,19 @@
 //
 // An individual exit is a plain struct, containing its data members, then a
 //     static constexpr std::string_view fmt_spec
-// whose {} placeholders are filled by the data members in declaration order.
+// whose `{}` placeholders are filled by the data members in declaration order.
 // A struct may instead supply fields() returning a std::tie of the members to
-// render - this allows you select or reorder them as part of the format.
+// render - this allows you to select or reorder them as part of the format.
 // fmt_spec uses std::format syntax, so placeholders may carry format specs,
-// e.g. {:04} or {:x}, and {{ }} produce literal braces.
+// e.g. `{:04}` or `{:x}`, and `{{` `}}` produce literal braces.
 //
-// The exit contract is fce::Outcome<fce::Successes<...>, fce::Failures<...>>.
-// Classification is defined by whether a type is in the Successes<> type list
-// or in the Failures<> type list.
+// The exit contract is `fce::Outcome<fce::Successes<...>, fce::Failures<...>>`.
+// Classification is defined by whether a type is in the `Successes<>` type list
+// or in the `Failures<>` type list.
 //
 // A function returns exits by value, directly or conveniently using RETURN_IF()
 //
-// Unit tests user Scenarios to prove the contract: an fce::Scenario table holding
+// Unit tests use `fce::Scenario`s to prove the contract: an `fce::Scenario` table holding
 // fce::expect<Exit>(captureless lambda) entries is then checked by CHECK_SCENARIOS.
 //
 // The compiler refuses:
