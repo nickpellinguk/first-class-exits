@@ -1,6 +1,6 @@
 # How to use C++ First Class Exits
 
-First class exits are std::variant exit types that allow you to specify all the success types and failure types that a given function can return. This is to support unit testing via static_assert().
+First class exits are std::variant exit types that allow you to conveniently specify all the success types and failure types that a given function can return. This is to support unit testing via static_assert().
 
 This allows you:
 - to have multiple different successful return types
@@ -12,6 +12,15 @@ This allows you:
 - to have single-line exit handling (via "RETURN_IF(COND, CODE)")
 
 This library includes a generic header that enables this, plus an example file showing a typical library of return types.
+
+# Implementation notes
+
+1. Note that the core logic must be constexpr: Example_PortTest.cpp does its work via a constexpr parse_port_impl(), with a simple parse_port() wrapped around it.
+2. Because the core logic is constexpr, I/O belongs in a thin outer layer or a callback
+3. message() (that turns the failure types into readable text) uses the fmt library and so is runtime-only
+4. The scenario table gives you exit coverage, not interior code coverage
+5. Automatic field extraction only goes up to seven fields
+6. Positional placeholders (such as "{0}") aren't currently supported by the placeholder count.
 
 # Example client code
 
