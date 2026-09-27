@@ -1,6 +1,6 @@
 # How to use C++ First Class Exits
 
-First class exits let you conveniently specify all the success types and failure types that a given function can return. This is to support unit testing via static_assert(). It does this by creating a bespoke std::variant exit type for each function, mad up of the success types and the failure types returned by that function.
+First class exits let you conveniently specify all the success types and failure types that a given function can return. This is to support unit testing via static_assert(). It does this by creating a bespoke std::variant exit type for each function, made up of the success types and the failure types returned by that function.
 
 This allows you:
 - to have multiple different successful return types
