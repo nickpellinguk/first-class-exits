@@ -2,8 +2,8 @@
 // ============================================================================
 // FirstClassExits.hpp
 //
-// First-class exits: every way a function can exit is given its own exit type
-// declared in the function's contract, and proven at compile time.
+// First-class exits: every way that a function can exit is given its own exit
+// type declared in the function's contract, and can then be proven at compile time.
 //
 // An individual exit is a plain struct, containing its data members, then a
 //     static constexpr std::string_view fmt_spec
@@ -48,7 +48,7 @@
 
 namespace fce {
 
-// ---------------------------------------------------------------- contract
+// ----------------------------------------------------------------
 
 // One typelist contains all the success types, the other all the failure types
 template<class...> struct Successes {};
@@ -136,7 +136,7 @@ template<class P>
 concept Exit = HasFmtSpec<P> &&
                detail::placeholder_count(P::fmt_spec) == std::tuple_size_v<detail::fields_t<P>>;
 
-// ---------------------------------------------------------------- rendering
+// ----------------------------------------------------------------
 
 // std::format checks fmt_spec against the field types at compile time.
 template<Exit P>
