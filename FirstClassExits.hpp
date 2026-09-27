@@ -28,7 +28,6 @@
 // - a missing fmt_spec
 // - a fmt_spec whose placeholder count doesn't match its fields
 // - a type listed twice
-// - a contract with no success
 // - the lists in the wrong order
 // - a return of an undeclared exit
 // - an ignored result
