@@ -3,7 +3,7 @@
 // FirstClassExits.hpp
 //
 // First-class exits: every way that a function can exit is given its own exit
-// type declared in the function's contract, and can then be proven at compile time.
+// type declared in the function's contract, which then gets proven at compile time.
 //
 // An individual exit is a plain struct, containing its data members, then a
 //     static constexpr std::string_view fmt_spec
