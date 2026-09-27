@@ -1,0 +1,68 @@
+#include "FirstClassExits.hpp"
+
+struct ParsedOk {
+    unsigned int port;
+    static constexpr std::string_view fmt_spec = "listening on port {}";
+};
+
+struct TextEmpty {
+    static constexpr std::string_view fmt_spec = "port text was empty";
+};
+
+struct TooLong {
+    std::size_t length;
+    static constexpr std::string_view fmt_spec = "{} is too long for a port name";
+};
+
+struct BadSyntax {
+    char badChar;
+    std::size_t column;
+    static constexpr std::string_view fmt_spec = "bad character '{}' at column {}";
+};
+
+struct IsZero {
+    static constexpr std::string_view fmt_spec = "port should never be zero";
+};
+
+struct TooBig {
+    unsigned int value;
+    static constexpr std::string_view fmt_spec = "{} is too big for a port";
+};
+
+using PortExit = fce::Outcome<fce::Successes<ParsedOk>,
+                              fce::Failures<TextEmpty, TooLong, BadSyntax, IsZero, TooBig>>;
+
+constexpr PortExit parse_port(std::string_view text) {
+    constexpr std::size_t kMaxPortStringLength = 5;
+    RETURN_IF(text.empty(), TextEmpty{});
+    RETURN_IF(text.size() > kMaxPortStringLength, TooLong{.length = text.size()});
+
+    unsigned int port = 0;
+    for (std::size_t i = 0; i < text.size(); ++i) {
+        const char c = text[i];
+        RETURN_IF(c < '0' || c > '9', BadSyntax{.badChar = c, .column = i + 1U});
+        port = port * 10U + static_cast<unsigned int>(c - '0');
+    }
+    RETURN_IF(port == 0U, IsZero{});
+    RETURN_IF(port >= 65536U, TooBig{port});
+    return ParsedOk{.port = port};
+}
+
+constexpr fce::Scenario<PortExit> port_scenarios[] = {
+    fce::expect<ParsedOk>  ([] { return parse_port("8080"); }),
+    fce::expect<TextEmpty> ([] { return parse_port(""); }),
+    fce::expect<TooLong>   ([] { return parse_port("123456"); }),
+    fce::expect<BadSyntax> ([] { return parse_port("80x0"); }),
+    fce::expect<IsZero>    ([] { return parse_port("0"); }),
+    fce::expect<TooBig>    ([] { return parse_port("99999"); }),
+};
+CHECK_SCENARIOS(port_scenarios);
+
+static_assert( parse_port("8080").get<ParsedOk>().port == 8080);
+static_assert(!parse_port("80x0"));
+static_assert( parse_port("80x0").get<BadSyntax>().badChar == 'x');
+static_assert( parse_port("80x0").get<BadSyntax>().column == 3);
+static_assert( parse_port("123456").get<TooLong>().length == 6);
+static_assert( parse_port("99999").get<TooBig>().value == 99999);
+
+int main() {}
