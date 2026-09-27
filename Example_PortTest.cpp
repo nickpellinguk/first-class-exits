@@ -32,7 +32,7 @@ struct TooBig {
 using PortExit = fce::Outcome<fce::Successes<ParsedOk>,
                               fce::Failures<TextEmpty, TooLong, BadSyntax, IsZero, TooBig>>;
 
-inline constexpr PortExit parse_port_impl(std::string_view text) {
+constexpr PortExit parse_port_impl(std::string_view text) {
     constexpr std::size_t kMaxPortStringLength = 5;
     RETURN_IF(text.empty(), TextEmpty{});
     RETURN_IF(text.size() > kMaxPortStringLength, TooLong{.length = text.size()});
